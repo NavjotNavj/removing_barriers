@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:removing_barriers/pages/WelcomePage.dart';
+import 'package:removing_barriers/pages/common/LoginPage.dart';
+import 'package:removing_barriers/pages/connect/HomeScreen.dart';
+import 'package:removing_barriers/pages/connect/SelectScreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -20,7 +23,13 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: WelcomePage(title: "Welcome Page"),
+      initialRoute:"/" ,
+      routes: {
+        '/':(context)=>LoginPage(title: "Login Page"),
+        '/homescreen':(context)=>HomeScreen(),
+        '/selectscreen':(context)=>SelectScreen(),
+
+      }
     );
   }
 }
