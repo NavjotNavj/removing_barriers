@@ -2,17 +2,19 @@ const Joi = require('joi');
 const mongoose = require('mongoose');
 const {Doctor,validate} = require('./doctor');
 const slotsSchema =  new mongoose.Schema({
-    id:{
+    doctorid:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Doctor',
-    }
-,
+    },
+    slotid:{
+        type:String
+    },
     timeslot:
     {
         type:String,
         required:true
     },
-    iBooked:
+    isBooked:
     {
         type:Boolean,
         default:false
@@ -24,18 +26,18 @@ const slotsSchema =  new mongoose.Schema({
 
 
 const Slots = mongoose.model('Slots', slotsSchema);
-function validate(user)
+function valid(slot)
 {
     const Schema = Joi.object({
 
-        id:Joi.string(),
+
         timeslot:Joi.string().required(),
 
 
        
     }).options({abortEarly:false});
-    return Schema.validate(user);
+    return Schema.valid(slot);
 }
 
 exports.Slots = Slots;
-exports.validate = validate;
+exports.valid = valid;
