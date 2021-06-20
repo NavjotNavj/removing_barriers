@@ -26,7 +26,7 @@ class ProgressContainerView extends StatelessWidget {
         VisibilityExtended(
           visible: isProgressRunning,
           child: Container(
-            color: Colors.grey.withOpacity(progressWidgetOpacity ?? 0.6),
+            color: Colors.grey.withOpacity(0.6),
             child: progressWidget ?? ProgressWidget(this.progressText),
           ),
         ),

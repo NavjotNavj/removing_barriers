@@ -1,4 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:removing_barriers/constants/ColorConstants.dart';
+import 'package:search_page/search_page.dart';
+
+class Person {
+  final String name, profession;
+  final num age;
+
+  Person(this.name, this.profession, this.age);
+}
 
 class SelectScreen extends StatefulWidget {
   @override
@@ -6,30 +15,77 @@ class SelectScreen extends StatefulWidget {
 }
 
 class _SelectScreenState extends State<SelectScreen> {
+  static List<Person> people = [
+    Person('Navjyot Singh', 'Surgeon', 64),
+    Person('Muskan', 'Cardiologist', 30),
+    Person('Somya', 'Bekar doctor', 55),
+    Person('Hello', 'Physician', 67),
+    Person('Test Name', 'ENT Specialist', 39),
+  ];
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Container(
-          color: Colors.lightBlueAccent.shade100,
+        backgroundColor: ColorConstants.BACKGROUND,
 
-          child: Column(
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              _topbar(),
-              SizedBox(
-                height: 30,
-              ),
-              _headingText(),
-              SizedBox(
-                height: 60,
-              ),
-              _buttonView(),
-            ],
-          ),
+        body: ListView.builder(
+          itemCount: people.length,
+          itemBuilder: (context, index) {
+            final Person person = people[index];
+            return ListTile(
+              title: Text(person.name),
+              subtitle: Text(person.profession),
+              trailing: Text('${person.age} yo'),
+            );
+          },
         ),
+          floatingActionButton: FloatingActionButton(
+            tooltip: 'Search people',
+            onPressed: () => showSearch(
+              context: context,
+              delegate: SearchPage<Person>(
+                onQueryUpdate: (s) => print(s),
+                items: people,
+                searchLabel: 'Search people',
+                suggestion: Center(
+                  child: Text('Filter people by name, surname or age'),
+                ),
+                failure: Center(
+                  child: Text('No person found :('),
+                ),
+                filter: (person) => [
+                  person.name,
+                  person.profession,
+                  person.age.toString(),
+                ],
+                builder: (person) => ListTile(
+                  title: Text(person.name),
+                  subtitle: Text(person.profession),
+                  trailing: Text('${person.age} yo'),
+                ),
+              ),
+            ),
+            child: Icon(Icons.search),
+          ),
+
+        // body: Container(
+        //
+        //   child: Column(
+        //     children: [
+        //       SizedBox(
+        //         height: 20,
+        //       ),
+        //       SizedBox(
+        //         height: 30,
+        //       ),
+        //       _headingText(),
+        //       SizedBox(
+        //         height: 60,
+        //       ),
+        //       _buttonView(),
+        //     ],
+        //   ),
+        // ),
       ),
     );
   }

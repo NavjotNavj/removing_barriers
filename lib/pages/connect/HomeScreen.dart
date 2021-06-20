@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:removing_barriers/constants/ColorConstants.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -11,28 +12,43 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Container(
-          color: Colors.lightBlueAccent.shade100,
-          child: Column(
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              _topbar(),
-              SizedBox(
-                height: 30,
-              ),
-              _searchbar(),
-              SizedBox(
-                height: 20,
-              ),
-              _carouselSlider(),
-              SizedBox(
-                height: 20,
-              ),
-              _detailButtonContainer(),
-              _backgroundImage(),
-            ],
+        backgroundColor: ColorConstants.BACKGROUND,
+        body: SingleChildScrollView(
+          child: Container(
+            margin: EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // SizedBox(
+                //   height: 20,
+                // ),
+                // _topbar(),
+                // SizedBox(
+                //   height: 30,
+                // ),
+                // _searchbar(),
+                SizedBox(
+                  height: 30,
+                ),
+                _carouselSlider(),
+                SizedBox(
+                  height: 20,
+                ),
+                _detailButtonContainer(),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "Other Services",
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                _otherView()
+                // _backgroundImage(),
+              ],
+            ),
           ),
         ),
       ),
@@ -77,8 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _searchbar() {
     return Container(
-      margin: EdgeInsets.only(left: 10, right: 10),
-      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 20),
+      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
       decoration: BoxDecoration(
           color: Colors.white.withAlpha(190),
           borderRadius: BorderRadius.all(
@@ -114,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _carouselSlider() {
     return Container(
-      height: 200,
+      height: 170,
       child: ListView(
         children: [
           CarouselSlider(
@@ -203,69 +218,159 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _detailButtonContainer() {
-    double c_width = MediaQuery.of(context).size.width * 0.9;
+    double c_width = MediaQuery.of(context).size.width;
 
-    return Container(
-      width: c_width,
-      padding: EdgeInsets.all(20),
-      margin: EdgeInsets.all(6.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
-        color: Colors.white,
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Image.network(
-                'https://png.pngtree.com/element_our/20200610/ourmid/pngtree-medical-blood-plasma-image_2248372.jpg',
-                width: 90,
-                height: 90,
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Expanded(
-                child: Column(
-                  children: [
-                    Text(
-                      "Find the Donor",
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 20,),
-                    Text(
-                      "Get matched with the right blood donor ans safe life",
-                      style: TextStyle(fontSize: 14),
-                      overflow: TextOverflow.clip,
-                    ),
-                  ],
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return Card(
+      child: Container(
+        width: c_width,
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+          color: Colors.white,
+        ),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Image.network(
+                  'https://media.baamboozle.com/uploads/images/140571/1616762928_292417_gif-url.gif',
+                  width: 90,
+                  height: 90,
                 ),
-              )
-            ],
-          ),
-          SizedBox(height: 20,),
-          SizedBox(
-            width: c_width,
-            child: ElevatedButton(
-              child: Text("Checkout"),
-              onPressed: () =>  Navigator.of(context)
-                  .pushNamed("/selectscreen"),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.yellow,
-                onPrimary: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(32.0),
+                SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text(
+                        "Find the Doctor",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Get matched with the right doctor and get an instant treatment",
+                        style: TextStyle(fontSize: 14),
+                        overflow: TextOverflow.clip,
+                      ),
+                    ],
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                  ),
+                )
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+              width: c_width,
+              child: ElevatedButton(
+                child: Text("Checkout"),
+                onPressed: () =>
+                    Navigator.of(context).pushNamed("/selectscreen"),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.yellow,
+                  onPrimary: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(32.0),
+                  ),
                 ),
               ),
             ),
-          ),      ],
+          ],
+        ),
       ),
     );
   }
-  
-  Widget _backgroundImage(){
+
+  Widget _backgroundImage() {
     return Image.asset('images/bg_image.png');
+  }
+
+  Widget _otherView() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: _otherServicesCard(
+                "Medicines Reminder",
+                "assets/images/pills.png",
+                onclick: () {
+                  Navigator.of(context).pushNamed("/home/medicinesHelper/home");
+
+                },
+              ),
+            ),
+            Expanded(
+              child: _otherServicesCard(
+                "Get your disease detected",
+                "assets/images/disease.png",
+                onclick: () {
+                  Navigator.of(context).pushNamed("/home/testScreen");
+
+                },
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: _otherServicesCard(
+                "Check twitter resources",
+                "https://png.pngtree.com/element_our/20200610/ourmid/pngtree-medical-blood-plasma-image_2248372.jpg",
+                onclick: () {},
+              ),
+            ),
+            Expanded(
+              child: _otherServicesCard(
+                "Death management",
+                "https://png.pngtree.com/element_our/20200610/ourmid/pngtree-medical-blood-plasma-image_2248372.jpg",
+                onclick: () {},
+              ),
+            ),
+          ],
+        ),
+        // Container(
+        //   width: MediaQuery.of(context).size.width,
+        //   height: 100,
+        //   child: _otherServicesCard(
+        //     "Medicines Reminder",
+        //     ".jpg",
+        //     onclick: () {
+        //
+        //     },
+        //   ),
+        // )
+      ],
+    );
+  }
+
+  Widget _otherServicesCard(String title, String url,
+      {required VoidCallback onclick}) {
+    return InkWell(
+      onTap: () {
+        onclick();
+      },
+      child: Card(
+        child: Container(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Image.asset(url),
+              SizedBox(
+                height: 10,
+              ),
+              Text(title,textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold),),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

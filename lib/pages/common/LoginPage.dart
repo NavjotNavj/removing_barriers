@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+
+// import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:removing_barriers/widgets/BezierContainer.dart';
 import 'package:removing_barriers/widgets/ProgressContainerView.dart';
@@ -17,6 +18,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool type = true;
   bool passObscure = true;
   late String password;
   late String mobileNumber;
@@ -58,17 +60,17 @@ class _LoginPageState extends State<LoginPage> {
             height: 10,
           ),
           TextFormField(
-            key: _mobNoKey,
-              validator: (val){
-              if(val!.isEmpty)
-              return "enter mobile number";
-              else if(val.length<6){
-                return "enter valid mobile number";
-              }
-              return null;
+              key: _mobNoKey,
+              validator: (val) {
+                if (val!.isEmpty)
+                  return "enter mobile number";
+                else if (val.length < 6) {
+                  return "enter valid mobile number";
+                }
+                return null;
               },
-              onSaved: (val){
-               mobileNumber = val!;
+              onSaved: (val) {
+                mobileNumber = val!;
               },
               decoration: InputDecoration(
                   border: InputBorder.none,
@@ -78,6 +80,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
   Widget _entryPasswordField(String title) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
@@ -111,13 +114,13 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _submitButton() {
     return InkWell(
-      onTap: ()async{
-        if(_formKey.currentState!.validate()){
-          _formKey.currentState!.save();
-          String token = await globals.authStore!.loginWithPassword(context, mobileNumber, password,isRedirectToAdmin: false);
-          globals.authStore?.redirectToAdmin(context, token);
-        }
-      },
+      // onTap: ()async{
+      //   if(_formKey.currentState!.validate()){
+      //     _formKey.currentState!.save();
+      //     String token = await globals.authStore!.loginWithPassword(context, mobileNumber, password,isRedirectToAdmin: false);
+      //     globals.authStore?.redirectToAdmin(context, token);
+      //   }
+      // },
       child: Container(
         width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.symmetric(vertical: 15),
@@ -134,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
             gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors: [Color(0xfffbb448), Color(0xfff7892b)])),
+                colors: [Color(0xff48e0fb), Color(0xff2bd8f7)])),
         child: Text(
           'Login',
           style: TextStyle(fontSize: 20, color: Colors.white),
@@ -178,9 +181,8 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _facebookButton() {
     return InkWell(
-      onTap: (){
-        Navigator.of(context)
-            .pushNamed("/homescreen");
+      onTap: () {
+        Navigator.of(context).pushNamed("/homescreen");
       },
       child: Container(
         height: 50,
@@ -257,7 +259,7 @@ class _LoginPageState extends State<LoginPage> {
             Text(
               'Register',
               style: TextStyle(
-                  color: Color(0xfff79c4f),
+                  color: Color(0xff4ff1f7),
                   fontSize: 13,
                   fontWeight: FontWeight.w600),
             ),
@@ -271,21 +273,24 @@ class _LoginPageState extends State<LoginPage> {
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
-          text: 'n',
+          text: 'Remov',
           style: GoogleFonts.portLligatSans(
             textStyle: Theme.of(context).textTheme.display1,
             fontSize: 30,
             fontWeight: FontWeight.w700,
-            color: Color(0xffe46b10),
+            color: Color(0xff4ff1f7),
           ),
           children: [
             TextSpan(
-              text: 'av',
+              text: 'ing',
               style: TextStyle(color: Colors.black, fontSize: 30),
             ),
             TextSpan(
-              text: 'app',
-              style: TextStyle(color: Color(0xffe46b10), fontSize: 30),
+              text: ' Barriers',
+              style: TextStyle(
+                color: Color(0xff4ff1f7),
+                fontSize: 30,
+              ),
             ),
           ]),
     );
@@ -304,56 +309,66 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: Observer(
-        builder: (_) {
-          return ProgressContainerView(
-            isProgressRunning: globals.authStore?.showProgress ?? false,
-            child: Form(
-              key: _formKey,
-              child: Container(
-                height: height,
-                child: Stack(
-                  children: <Widget>[
-                    Positioned(
-                        top: -height * .15,
-                        right: -MediaQuery.of(context).size.width * .4,
-                        child: BezierContainer()),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            SizedBox(height: height * .2),
-                            _title(),
-                            SizedBox(height: 50),
-                            _emailPasswordWidget(),
-                            SizedBox(height: 20),
-                            _submitButton(),
-                            Container(
-                              padding: EdgeInsets.symmetric(vertical: 10),
-                              alignment: Alignment.centerRight,
-                              child: Text('Forgot Password ?',
-                                  style: TextStyle(
-                                      fontSize: 14, fontWeight: FontWeight.w500)),
-                            ),
-                            _divider(),
-                            _facebookButton(),
-                            SizedBox(height: height * .055),
-                            _createAccountLabel(),
-                          ],
-                        ),
+        // body: Observer(
+        // builder: (_) {
+        //   return
+
+        body: ProgressContainerView(
+      isProgressRunning:
+          // globals.authStore?.showProgress ??
+          false,
+      child: Form(
+        key: _formKey,
+        child: Container(
+          height: height,
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                  top: -height * .15,
+                  right: -MediaQuery.of(context).size.width * .4,
+                  child: BezierContainer()),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(height: height * .2),
+                      _title(),
+                      Switch(value: type, onChanged: (value){
+                        setState(() {
+                          type=value;
+                        });
+                      }),
+                      Text(type?"User":"Doctor"),
+                      SizedBox(height: 50),
+                      _emailPasswordWidget(),
+                      SizedBox(height: 20),
+                      _submitButton(),
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        alignment: Alignment.centerRight,
+                        child: Text('Forgot Password ?',
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w500)),
                       ),
-                    ),
-                    Positioned(top: 40, left: 0, child: _backButton()),
-                  ],
+                      _divider(),
+                      _facebookButton(),
+                      SizedBox(height: height * .055),
+                      _createAccountLabel(),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+              Positioned(top: 40, left: 0, child: _backButton()),
+            ],
+          ),
+        ),
       ),
-    );
+    )
+        // },
+        // ),
+        );
   }
 }

@@ -14,6 +14,8 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  bool type=true;
+
   Widget _backButton() {
     return InkWell(
       onTap: () {
@@ -76,7 +78,7 @@ class _SignUpPageState extends State<SignUpPage> {
           gradient: LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
-              colors: [Color(0xfffbb448), Color(0xfff7892b)])),
+              colors: [Color(0xff48e0fb), Color(0xff2bd8f7)])),
       child: Text(
         'Register Now',
         style: TextStyle(fontSize: 20, color: Colors.white),
@@ -109,7 +111,7 @@ class _SignUpPageState extends State<SignUpPage> {
             Text(
               'Login',
               style: TextStyle(
-                  color: Color(0xfff79c4f),
+                  color: Color(0xff4ff1f7),
                   fontSize: 13,
                   fontWeight: FontWeight.w600),
             ),
@@ -128,7 +130,7 @@ class _SignUpPageState extends State<SignUpPage> {
             textStyle: Theme.of(context).textTheme.display1,
             fontSize: 30,
             fontWeight: FontWeight.w700,
-            color: Color(0xffe46b10),
+            color: Color(0xff4ff1f7),
           ),
           children: [
             TextSpan(
@@ -137,17 +139,37 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
             TextSpan(
               text: 'app',
-              style: TextStyle(color: Color(0xffe46b10), fontSize: 30),
+              style: TextStyle(
+                color: Color(0xff4ff1f7),
+                fontSize: 30,
+              ),
             ),
           ]),
     );
   }
 
-  Widget _emailPasswordWidget() {
+  Widget _emailPasswordWidgetUser() {
     return Column(
       children: <Widget>[
-        _entryField("Username"),
-        _entryField("Email id"),
+        _entryField("Name"),
+        _entryField("Age"),
+        _entryField("Phone Number"),
+        _entryField("Address"),
+        _entryField("Email"),
+        _entryField("Password", isPassword: true),
+      ],
+    );
+  }
+
+  Widget _emailPasswordWidgetDoctor() {
+    return Column(
+      children: <Widget>[
+        _entryField("Name"),
+        _entryField("Age"),
+        _entryField("Phone Number"),
+        _entryField("Address"),
+        _entryField("Speciality"),
+        _entryField("Email"),
         _entryField("Password", isPassword: true),
       ],
     );
@@ -175,10 +197,17 @@ class _SignUpPageState extends State<SignUpPage> {
                   children: <Widget>[
                     SizedBox(height: height * .2),
                     _title(),
+                    Switch(value: type, onChanged: (value){
+                      setState(() {
+                        type=value;
+                      });
+                    }),
+                    Text(type?"User":"Doctor"),
                     SizedBox(
                       height: 50,
                     ),
-                    _emailPasswordWidget(),
+                    type?
+                    _emailPasswordWidgetUser():_emailPasswordWidgetDoctor(),
                     SizedBox(
                       height: 20,
                     ),
