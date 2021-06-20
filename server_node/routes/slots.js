@@ -61,8 +61,9 @@ router.get('/all', async (req, res) => {
 
 router.get('/', auth, async (req, res) => {
     const doctor = await Doctor.findById(req.user._id);
+    console.log(doctor);
     const slots = await Slots
-        .find({ doctorid: doctor._id });
+        .find({ doctorid: {$eq:doctor._id} });
     console.log(slots);
     res.send(slots);
 
