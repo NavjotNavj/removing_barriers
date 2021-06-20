@@ -69,5 +69,12 @@ router.get('/', auth, async (req, res) => {
 
 })
 
+router.delete('/',auth,async(req,res)=>{
+
+    const result = await Slots.deleteOne({slotid:req.body.slotid});
+    res.send(result);
+
+})
+
 
 module.exports = router;
