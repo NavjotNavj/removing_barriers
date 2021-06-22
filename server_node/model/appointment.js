@@ -9,7 +9,14 @@ const appointmentSchema =  new mongoose.Schema({
         ref:'User'
     },
     slotid:{
-        type:String
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Slots'
+    },
+    doctorid:
+    {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Doctor'
+
     },
     isConfirmedByDoctor:
     {
