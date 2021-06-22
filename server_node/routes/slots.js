@@ -1,6 +1,6 @@
 const { Slots, valid } = require('../model/slots');
 const { Doctor, validate } = require('../model/doctor');
-const {User} = require('../model/user');
+const { User } = require('../model/user');
 const auth = require('../middleware/auth.js');
 const mongoose = require('mongoose');
 const express = require('express');
@@ -60,21 +60,20 @@ router.get('/getdoctorslot', auth, async (req, res) => {
     const doctor = await Doctor.findById(req.user._id);
     console.log(doctor);
     const slots = await Slots
-        .find({ doctorid: {$eq:doctor._id} });
+        .find({ doctorid: { $eq: doctor._id } });
     console.log(slots);
     res.send(slots);
 
 })
 
-router.delete('/',auth,async(req,res)=>{
+router.delete('/', auth, async (req, res) => {
 
-    const result = await Slots.deleteOne({slotid:req.body.slotid});
+    const result = await Slots.deleteOne({ slotid: req.body.slotid });
     res.send(result);
 
 })
 
-router.get('/getdoctors',auth,async(req,res)=>
-{
+router.get('/getdoctors', auth, async (req, res) => {
     const user = await User.findById(req.user._id);
     const doctors = await Doctor.find();
     res.send(doctors);
@@ -82,12 +81,12 @@ router.get('/getdoctors',auth,async(req,res)=>
 
 })
 
-router.get('/getSelectedDoctorSlot',auth,async(req,res)=>{
+router.get('/getSelectedDoctorSlot', auth, async (req, res) => {
     const doctorid = req.body.doctorid;
     const slots = await Slots
-    .find({ doctorid: {$eq:doctorid} });
-      console.log(slots);
-      res.send(slots);
+        .find({ doctorid: { $eq: doctorid } });
+    console.log(slots);
+    res.send(slots);
 
 })
 module.exports = router;

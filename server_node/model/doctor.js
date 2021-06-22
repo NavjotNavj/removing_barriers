@@ -1,85 +1,83 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const doctorSchema =  new mongoose.Schema({
-    id:{
-        type:String,
+const doctorSchema = new mongoose.Schema({
+    id: {
+        type: String,
     },
-    name:{
-        type:String,
-        required:true,
-        minlength:5,
-        maxlength:50
+    name: {
+        type: String,
+        required: true,
+        minlength: 5,
+        maxlength: 50
     },
-    email:{
-        type:String,
-        required:true,
-        minlength:5,
-        maxlength:50,
-        unique:true
+    email: {
+        type: String,
+        required: true,
+        minlength: 5,
+        maxlength: 50,
+        unique: true
 
     },
-    password:{
-        type:String,
-        required:true,
-        minlength:5,
-        maxlength:200
+    password: {
+        type: String,
+        required: true,
+        minlength: 5,
+        maxlength: 200
     },
-    phone:{
-        type:String,
-        required:true,
-        minlength:10,
-        maxlength:10
+    phone: {
+        type: String,
+        required: true,
+        minlength: 10,
+        maxlength: 10
     },
-    gender:{
-        type:String,
-        required:true,
-        minlength:3,
-        maxlength:6
+    gender: {
+        type: String,
+        required: true,
+        minlength: 3,
+        maxlength: 6
     },
-    address:{
-        type:String,
-        required:true,
-        minlength:10,
-        maxlength:50
+    address: {
+        type: String,
+        required: true,
+        minlength: 10,
+        maxlength: 50
     },
-    dateofcreation:{
+    dateofcreation: {
         type: String,
     },
     specialisation:
     {
-        type:String,
-        required:true
+        type: String,
+        required: true
     },
     age:
     {
-          type:Number,
-          required:true
+        type: Number,
+        required: true
     }
 
 
 })
-doctorSchema.methods.generateAuthtoken = function()
-{
+doctorSchema.methods.generateAuthtoken = function () {
     console.log(this._id);
-    const token = jwt.sign({_id:this._id},'jwtprivatekey');
+    const token = jwt.sign({ _id: this._id }, 'jwtprivatekey');
     return token;
 }
 
-const Doctor = mongoose.model('Doctor',doctorSchema);
-function validate(user)
-{
+const Doctor = mongoose.model('Doctor', doctorSchema);
+function validate(user) {
     const Schema = Joi.object({
         id: Joi.string(),
-        name:   Joi.string().min(5).max(50).required(),
+        name: Joi.string().min(5).max(50).required(),
         email: Joi.string().min(5).max(50).required().email(),
-        password:Joi.string().min(5).max(200).required(),
-        phone:Joi.string().min(10).max(10).required(),
-        gender:Joi.string().min(3).max(6).required(),
-        address:Joi.string().min(10).max(50).required(),
-        age:Joi.number().required(),
-        specialisation:Joi.string().required()
-    }).options({abortEarly:false});
+        password: Joi.string().min(5).max(200).required(),
+        phone: Joi.string().min(10).max(10).required(),
+        gender: Joi.string().min(3).max(6).required(),
+        address: Joi.string().min(10).max(50).required(),
+        age: Joi.number().required(),
+        specialisation: Joi.string().required()
+    }).options({ abortEarly: false });
     return Schema.validate(user);
 }
 

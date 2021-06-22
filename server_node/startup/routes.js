@@ -21,8 +21,8 @@ module.exports = function (app) {
     app.use('/auth', auth);
     app.use('/doctor', doctor);
     app.use('/doctorauth', doctorauth);
-    app.use('/slots',slots);
-    app.use('/appointment',appointment);
+    app.use('/slots', slots);
+    app.use('/appointment', appointment);
 
 
 

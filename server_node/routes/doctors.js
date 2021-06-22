@@ -52,7 +52,7 @@ router.post('/', async (req, res) => {
 
 
     var today = new Date();
-    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
     doctor = new Doctor({
         id: new mongoose.Types.ObjectId(),
         name: req.body.name,
@@ -97,7 +97,7 @@ router.post('/', async (req, res) => {
 })
 
 
-router.get('/',async(req,res)=>{
+router.get('/', async (req, res) => {
     const doctors = await Doctor.find();
     res.send(doctors);
 })

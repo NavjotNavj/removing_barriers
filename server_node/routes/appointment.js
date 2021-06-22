@@ -1,21 +1,21 @@
-const{appointment} = require('../model/appointment');
-const {Slots} = require('../model/slots');
-const{User} = require('../model/user');
-const{Doctor} = require('../model/doctor');
+const { appointment } = require('../model/appointment');
+const { Slots } = require('../model/slots');
+const { User } = require('../model/user');
+const { Doctor } = require('../model/doctor');
 const auth = require('../middleware/auth.js');
 const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
 
-router.post('/',auth,async(req,res)=>{
+router.post('/', auth, async (req, res) => {
     const user = await User.findById(req.user._id);
     var resp;
 
     let appointmentByUser = new appointment({
-        userid:req.user._id,
-        slotid:req.body.slotid,
-        doctorid:req.body.doctorid,
-        additionalrequirement:req.body.additionalrequirement
+        userid: req.user._id,
+        slotid: req.body.slotid,
+        doctorid: req.body.doctorid,
+        additionalrequirement: req.body.additionalrequirement
 
     })
     console.log(appointmentByUser);
@@ -28,11 +28,11 @@ router.post('/',auth,async(req,res)=>{
             error: false,
             message: "Data send successfully",
             data: {
-                userid:appointmentByUser.userid,
-                slotid:appointmentByUser.slotid,
-                doctorid:appointmentByUser.slotid,
-                additionalrequirement:appointmentByUser.additionalrequirement,
-                isConfirmedByDoctor:appointmentByUser.isConfirmedByDoctor,
+                userid: appointmentByUser.userid,
+                slotid: appointmentByUser.slotid,
+                doctorid: appointmentByUser.slotid,
+                additionalrequirement: appointmentByUser.additionalrequirement,
+                isConfirmedByDoctor: appointmentByUser.isConfirmedByDoctor,
 
 
             }
@@ -50,25 +50,26 @@ router.post('/',auth,async(req,res)=>{
 })
 
 
-router.get('/myappointment',auth,async(req,res)=>{
+router.get('/myappointment', auth, async (req, res) => {
     const doctor = await Doctor.findById(req.user._id);
     console.log(doctor);
     const myappointments = await appointment
-        .find({ doctorid: {$eq:doctor._id} });
+        .find({ doctorid: { $eq: doctor._id } });
     console.log(myappointments);
     res.send(myappointments);
 
 })
 
-router.put('/confirmationByDoctor',auth,async(req,res)=>{
+router.put('/confirmationByDoctor', auth, async (req, res) => {
 
     const appointmentofDoctor = await appointment.findById(req.body.appointmentid);
     appointmentofDoctor.isConfirmedByDoctor = true;
-    const result =  await appointmentofDoctor.save();
+    const result = await appointmentofDoctor.save();
     res.send(result);
 
 
 })
 
 
-module.exports  = router;
+
+module.exports = router;
