@@ -19,6 +19,10 @@ const appointmentSchema =  new mongoose.Schema({
     {
         type:Boolean,
         default:false
+    },
+    additionalrequirement:
+    {
+        type:String
     }
 })
 
