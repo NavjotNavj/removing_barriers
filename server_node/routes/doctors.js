@@ -96,8 +96,7 @@ router.post('/', async (req, res) => {
 
 })
 
-// make get doctors .... 
-// router.get('/',)
+
 router.get('/',async(req,res)=>{
     const doctors = await Doctor.find();
     res.send(doctors);

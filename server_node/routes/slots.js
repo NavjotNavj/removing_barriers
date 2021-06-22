@@ -1,5 +1,6 @@
 const { Slots, valid } = require('../model/slots');
 const { Doctor, validate } = require('../model/doctor');
+const {User} = require('../model/user');
 const auth = require('../middleware/auth.js');
 const mongoose = require('mongoose');
 const express = require('express');
@@ -55,7 +56,7 @@ router.get('/all', async (req, res) => {
     console.log(slots);
 })
 
-router.get('/', auth, async (req, res) => {
+router.get('/getdoctorslot', auth, async (req, res) => {
     const doctor = await Doctor.findById(req.user._id);
     console.log(doctor);
     const slots = await Slots
@@ -72,5 +73,21 @@ router.delete('/',auth,async(req,res)=>{
 
 })
 
+router.get('/getdoctors',auth,async(req,res)=>
+{
+    const user = await User.findById(req.user._id);
+    const doctors = await Doctor.find();
+    res.send(doctors);
 
+
+})
+
+router.get('/getSelectedDoctorSlot',auth,async(req,res)=>{
+    const doctorid = req.body.doctorid;
+    const slots = await Slots
+    .find({ doctorid: {$eq:doctorid} });
+      console.log(slots);
+      res.send(slots);
+
+})
 module.exports = router;
