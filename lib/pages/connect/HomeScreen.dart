@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:removing_barriers/constants/ColorConstants.dart';
+// import 'package:webview_flutter/webview_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -12,6 +13,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: Text('Removing Barriers'),
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+        ),
         backgroundColor: ColorConstants.BACKGROUND,
         body: SingleChildScrollView(
           child: Container(
@@ -135,14 +141,23 @@ class _HomeScreenState extends State<HomeScreen> {
           CarouselSlider(
             items: [
               //1st Image of Slider
-              Container(
-                margin: EdgeInsets.all(6.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
-                  image: DecorationImage(
-                    image: NetworkImage(
-                        "https://img.collegedekhocdn.com/media/img/careers/doctor-clinic.jpg"),
-                    fit: BoxFit.cover,
+              InkWell(
+                onTap: () {
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //       builder: (context) =>),
+                  // );
+                },
+                child: Container(
+                  margin: EdgeInsets.all(6.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    image: DecorationImage(
+                      image: NetworkImage(
+                          "https://img.collegedekhocdn.com/media/img/careers/doctor-clinic.jpg"),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
@@ -302,7 +317,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 "assets/images/pills.png",
                 onclick: () {
                   Navigator.of(context).pushNamed("/home/medicinesHelper/home");
-
                 },
               ),
             ),
@@ -312,26 +326,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 "assets/images/disease.png",
                 onclick: () {
                   Navigator.of(context).pushNamed("/home/testScreen");
-
                 },
-              ),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: _otherServicesCard(
-                "Check twitter resources",
-                "https://png.pngtree.com/element_our/20200610/ourmid/pngtree-medical-blood-plasma-image_2248372.jpg",
-                onclick: () {},
-              ),
-            ),
-            Expanded(
-              child: _otherServicesCard(
-                "Death management",
-                "https://png.pngtree.com/element_our/20200610/ourmid/pngtree-medical-blood-plasma-image_2248372.jpg",
-                onclick: () {},
               ),
             ),
           ],
@@ -366,7 +361,11 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 height: 10,
               ),
-              Text(title,textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold),),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ],
           ),
         ),

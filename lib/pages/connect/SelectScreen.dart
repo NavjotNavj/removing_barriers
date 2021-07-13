@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:removing_barriers/constants/ColorConstants.dart';
+import 'package:removing_barriers/pages/connect/ApointmentAvailableScreen.dart';
+import 'package:removing_barriers/pages/connect/ApointmentListForDoctor.dart';
+import 'package:removing_barriers/pages/connect/ApointmentsScreen.dart';
 import 'package:search_page/search_page.dart';
 
 class Person {
@@ -22,6 +25,7 @@ class _SelectScreenState extends State<SelectScreen> {
     Person('Hello', 'Physician', 67),
     Person('Test Name', 'ENT Specialist', 39),
   ];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -36,37 +40,74 @@ class _SelectScreenState extends State<SelectScreen> {
               title: Text(person.name),
               subtitle: Text(person.profession),
               trailing: Text('${person.age} yo'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AppointmentAvailableScreen()),
+                );
+              },
             );
           },
         ),
-          floatingActionButton: FloatingActionButton(
-            tooltip: 'Search people',
-            onPressed: () => showSearch(
-              context: context,
-              delegate: SearchPage<Person>(
-                onQueryUpdate: (s) => print(s),
-                items: people,
-                searchLabel: 'Search people',
-                suggestion: Center(
-                  child: Text('Filter people by name, surname or age'),
-                ),
-                failure: Center(
-                  child: Text('No person found :('),
-                ),
-                filter: (person) => [
-                  person.name,
-                  person.profession,
-                  person.age.toString(),
-                ],
-                builder: (person) => ListTile(
-                  title: Text(person.name),
-                  subtitle: Text(person.profession),
-                  trailing: Text('${person.age} yo'),
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AppointmentListDoctor()),
+                );
+              },
+              child: Icon(Icons.timer_outlined),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AppointmentsScreen()),
+                );
+              },
+              child: Icon(Icons.timer_outlined),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            FloatingActionButton(
+              tooltip: 'Search people',
+              onPressed: () => showSearch(
+                context: context,
+                delegate: SearchPage<Person>(
+                  onQueryUpdate: (s) => print(s),
+                  items: people,
+                  searchLabel: 'Search people',
+                  suggestion: Center(
+                    child: Text('Filter people by name, surname or age'),
+                  ),
+                  failure: Center(
+                    child: Text('No person found :('),
+                  ),
+                  filter: (person) => [
+                    person.name,
+                    person.profession,
+                    person.age.toString(),
+                  ],
+                  builder: (person) => ListTile(
+                    title: Text(person.name),
+                    subtitle: Text(person.profession),
+                    trailing: Text('${person.age} yo'),
+                  ),
                 ),
               ),
+              child: Icon(Icons.search),
             ),
-            child: Icon(Icons.search),
-          ),
+          ],
+        ),
 
         // body: Container(
         //
