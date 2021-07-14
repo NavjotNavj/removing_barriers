@@ -1,10 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:http/http.dart' as http;
 
 // import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:removing_barriers/models/LoginModel.dart';
+import 'package:removing_barriers/utils/Navigation.dart';
 import 'package:removing_barriers/widgets/BezierContainer.dart';
 import 'package:removing_barriers/widgets/ProgressContainerView.dart';
 import 'package:removing_barriers/utils/Globals.dart' as globals;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'SignUpPage.dart';
 
@@ -24,6 +31,11 @@ class _LoginPageState extends State<LoginPage> {
   late String mobileNumber;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   GlobalKey<FormFieldState> _mobNoKey = GlobalKey<FormFieldState>();
+
+  final myEmailController = TextEditingController();
+  final myPasswordController = TextEditingController();
+
+  Future<LoginModel>? _futureLogin;
 
   Widget _backButton() {
     return InkWell(
@@ -60,6 +72,7 @@ class _LoginPageState extends State<LoginPage> {
             height: 10,
           ),
           TextFormField(
+              controller: myEmailController,
               key: _mobNoKey,
               validator: (val) {
                 if (val!.isEmpty)
@@ -96,6 +109,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           TextFormField(
               onSaved: (val) => password = val!,
+              controller: myPasswordController,
               validator: (val) {
                 if (val!.isEmpty) {
                   return "enter password";
@@ -114,13 +128,9 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _submitButton() {
     return InkWell(
-      // onTap: ()async{
-      //   if(_formKey.currentState!.validate()){
-      //     _formKey.currentState!.save();
-      //     String token = await globals.authStore!.loginWithPassword(context, mobileNumber, password,isRedirectToAdmin: false);
-      //     globals.authStore?.redirectToAdmin(context, token);
-      //   }
-      // },
+      onTap: () {
+        validation();
+      },
       child: Container(
         width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.symmetric(vertical: 15),
@@ -306,6 +316,15 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
+  void dispose() {
+    // cleaning up the controller when the widget is disposed
+
+    myEmailController.dispose();
+    myPasswordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -313,62 +332,147 @@ class _LoginPageState extends State<LoginPage> {
         // builder: (_) {
         //   return
 
-        body: ProgressContainerView(
-      isProgressRunning:
-          // globals.authStore?.showProgress ??
-          false,
-      child: Form(
-        key: _formKey,
-        child: Container(
-          height: height,
-          child: Stack(
-            children: <Widget>[
-              Positioned(
-                  top: -height * .15,
-                  right: -MediaQuery.of(context).size.width * .4,
-                  child: BezierContainer()),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(height: height * .2),
-                      _title(),
-                      Switch(value: type, onChanged: (value){
-                        setState(() {
-                          type=value;
-                        });
-                      }),
-                      Text(type?"User":"Doctor"),
-                      SizedBox(height: 50),
-                      _emailPasswordWidget(),
-                      SizedBox(height: 20),
-                      _submitButton(),
-                      Container(
-                        padding: EdgeInsets.symmetric(vertical: 10),
-                        alignment: Alignment.centerRight,
-                        child: Text('Forgot Password ?',
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w500)),
+        body: SingleChildScrollView(
+      child: _futureLogin == null
+          ? Form(
+              key: _formKey,
+              child: Container(
+                height: height,
+                child: Stack(
+                  children: <Widget>[
+                    Positioned(
+                        top: -height * .15,
+                        right: -MediaQuery.of(context).size.width * .4,
+                        child: BezierContainer()),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            SizedBox(height: height * .2),
+                            _title(),
+                            Switch(
+                                value: type,
+                                onChanged: (value) {
+                                  setState(() {
+                                    type = value;
+                                  });
+                                }),
+                            Text(type ? "User" : "Doctor"),
+                            SizedBox(height: 50),
+                            _emailPasswordWidget(),
+                            SizedBox(height: 20),
+                            _submitButton(),
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              alignment: Alignment.centerRight,
+                              child: Text('Forgot Password ?',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500)),
+                            ),
+                            _divider(),
+                            _facebookButton(),
+                            SizedBox(height: height * .055),
+                            _createAccountLabel(),
+                          ],
+                        ),
                       ),
-                      _divider(),
-                      _facebookButton(),
-                      SizedBox(height: height * .055),
-                      _createAccountLabel(),
-                    ],
-                  ),
+                    ),
+                    Positioned(top: 40, left: 0, child: _backButton()),
+                  ],
                 ),
               ),
-              Positioned(top: 40, left: 0, child: _backButton()),
-            ],
-          ),
-        ),
-      ),
+            )
+          : FutureBuilder<LoginModel>(
+              future: _futureLogin,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  // print("data received");
+                  // return Padding(
+                  //   padding: const EdgeInsets.all(30.0),
+                  //   child: Center(child: Text(snapshot.data.data.email)),
+                  // );
+                  _saveDetailsToSharedPref(
+                      snapshot.data!.data!.token!, snapshot.data!.data!.name!);
+
+                  SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+                    Navigation.navigateToHomeScreen(context);
+                  });
+                } else if (snapshot.hasError) {
+                  return Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: Center(child: Text("${snapshot.error}")),
+                  );
+                }
+                return CircularProgressIndicator();
+              },
+            ),
     )
         // },
         // ),
         );
+  }
+
+  void getData() {
+    mobileNumber = myEmailController.text;
+    password = myPasswordController.text;
+  }
+
+  void validation() {
+    getData();
+    if (mobileNumber.length <= 0 || !validateEmail(mobileNumber)) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text("Please enter a correct email address"),
+      ));
+    } else if (password.length <= 0) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text("Password field is empty"),
+      ));
+    } else {
+      setState(() {
+        _futureLogin = emailApiHit(mobileNumber, password);
+      });
+    }
+  }
+
+  //used for validating email in flutter
+  bool validateEmail(String value) {
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = new RegExp(pattern.toString());
+    return (!regex.hasMatch(value)) ? false : true;
+  }
+
+  Future<LoginModel> emailApiHit(String email, String password) async {
+    final uri = 'https://removingbarriers.herokuapp.com/auth';
+    var requestBody = {
+      'email': email,
+      'password': password,
+    };
+    final http.Response response = await http.post(
+      Uri.parse(uri),
+      //   headers: <String, String>{
+      // "Content-Type": "application/x-www-form-urlencoded",
+      //     // 'Content-Type': 'application/json; charset=UTF-8',
+      //   },
+      body: requestBody,
+    );
+
+    if (response.statusCode == 200) {
+      return LoginModel.fromJson(jsonDecode(response.body));
+    } else {
+      print("ERRORR in logging");
+
+      throw Exception('Failded to login');
+    }
+  }
+
+  void _saveDetailsToSharedPref(String token, String name) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', token);
+    await prefs.setString('name', name);
   }
 }
