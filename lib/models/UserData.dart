@@ -1,42 +1,30 @@
-class DoctorListModel {
-  // final String? _id;
-  final String? id;
+class UserData {
   final String? name;
   final String? email;
-  final String? password;
   final String? phone;
   final String? gender;
   final String? address;
   final String? dateofcreation;
   final int? age;
-  final String? specialisation;
 
-  DoctorListModel({
-    // this._id,
-    this.id,
+  UserData({
     this.name,
     this.email,
-    this.password,
     this.phone,
     this.gender,
     this.address,
     this.dateofcreation,
-    this.age,
-    this.specialisation,
-  });
+    this.age,});
 
-  factory DoctorListModel.fromJson(Map<String, dynamic> json) {
-    return DoctorListModel(
-      id: json['_id'],
+  factory UserData.fromJson(Map<String, dynamic> json) {
+    return UserData(
       name: json['name'],
       email: json['email'],
-      password: json['password'],
       phone: json['phone'],
       gender: json['gender'],
       address: json['address'],
       dateofcreation: json['dateofcreation'],
       age: json['age'],
-      specialisation: json['specialisation'],
     );
   }
 

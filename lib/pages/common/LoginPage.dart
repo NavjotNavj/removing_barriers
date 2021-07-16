@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 
 // import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:removing_barriers/models/DoctorLoginModel.dart';
 import 'package:removing_barriers/models/LoginModel.dart';
 import 'package:removing_barriers/utils/Navigation.dart';
 import 'package:removing_barriers/widgets/BezierContainer.dart';
@@ -36,6 +37,7 @@ class _LoginPageState extends State<LoginPage> {
   final myPasswordController = TextEditingController();
 
   Future<LoginModel>? _futureLogin;
+  Future<DoctorLoginModel>? _futureLoginDoctor;
 
   Widget _backButton() {
     return InkWell(
@@ -129,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget _submitButton() {
     return InkWell(
       onTap: () {
-        validation();
+        type ? userValidation() : doctorValidation();
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -333,7 +335,7 @@ class _LoginPageState extends State<LoginPage> {
         //   return
 
         body: SingleChildScrollView(
-      child: _futureLogin == null
+      child: _futureLogin == null && _futureLoginDoctor == null
           ? Form(
               key: _formKey,
               child: Container(
@@ -386,30 +388,58 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             )
-          : FutureBuilder<LoginModel>(
-              future: _futureLogin,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  // print("data received");
-                  // return Padding(
-                  //   padding: const EdgeInsets.all(30.0),
-                  //   child: Center(child: Text(snapshot.data.data.email)),
-                  // );
-                  _saveDetailsToSharedPref(
-                      snapshot.data!.data!.token!, snapshot.data!.data!.name!);
+          : type
+              ? FutureBuilder<LoginModel>(
+                  future: _futureLogin,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      // print("data received");
+                      // return Padding(
+                      //   padding: const EdgeInsets.all(30.0),
+                      //   child: Center(child: Text(snapshot.data.data.email)),
+                      // );
+                      _saveDetailsToSharedPref(snapshot.data!.data!.token!,
+                          snapshot.data!.data!.name!);
 
-                  SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
-                    Navigation.navigateToHomeScreen(context);
-                  });
-                } else if (snapshot.hasError) {
-                  return Padding(
-                    padding: const EdgeInsets.all(30.0),
-                    child: Center(child: Text("${snapshot.error}")),
-                  );
-                }
-                return CircularProgressIndicator();
-              },
-            ),
+                      SchedulerBinding.instance!
+                          .addPostFrameCallback((timeStamp) {
+                        Navigation.navigateToHomeScreen(context);
+                      });
+                    } else if (snapshot.hasError) {
+                      return Padding(
+                        padding: const EdgeInsets.all(30.0),
+                        child: Center(child: Text("${snapshot.error}")),
+                      );
+                    }
+                    return CircularProgressIndicator();
+                  },
+                )
+              : FutureBuilder<DoctorLoginModel>(
+                  future: _futureLoginDoctor,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      // print("data received");
+                      // return Padding(
+                      //   padding: const EdgeInsets.all(30.0),
+                      //   child: Center(child: Text(snapshot.data.data.email)),
+                      // );
+                      _saveDetailsToSharedPref(snapshot.data!.data!.token!,
+                          snapshot.data!.data!.name!);
+
+                      SchedulerBinding.instance!
+                          .addPostFrameCallback((timeStamp) {
+                        Navigation.navigateToDoctorAppointmentRequestList(
+                            context);
+                      });
+                    } else if (snapshot.hasError) {
+                      return Padding(
+                        padding: const EdgeInsets.all(30.0),
+                        child: Center(child: Text("${snapshot.error}")),
+                      );
+                    }
+                    return CircularProgressIndicator();
+                  },
+                ),
     )
         // },
         // ),
@@ -421,7 +451,7 @@ class _LoginPageState extends State<LoginPage> {
     password = myPasswordController.text;
   }
 
-  void validation() {
+  void userValidation() {
     getData();
     if (mobileNumber.length <= 0 || !validateEmail(mobileNumber)) {
       Scaffold.of(context).showSnackBar(SnackBar(
@@ -433,7 +463,24 @@ class _LoginPageState extends State<LoginPage> {
       ));
     } else {
       setState(() {
-        _futureLogin = emailApiHit(mobileNumber, password);
+        _futureLogin = userLoginApiHit(mobileNumber, password);
+      });
+    }
+  }
+
+  void doctorValidation() {
+    getData();
+    if (mobileNumber.length <= 0 || !validateEmail(mobileNumber)) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text("Please enter a correct email address"),
+      ));
+    } else if (password.length <= 0) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text("Password field is empty"),
+      ));
+    } else {
+      setState(() {
+        _futureLoginDoctor = doctorLoginApiHit(mobileNumber, password);
       });
     }
   }
@@ -446,7 +493,7 @@ class _LoginPageState extends State<LoginPage> {
     return (!regex.hasMatch(value)) ? false : true;
   }
 
-  Future<LoginModel> emailApiHit(String email, String password) async {
+  Future<LoginModel> userLoginApiHit(String email, String password) async {
     final uri = 'https://removingbarriers.herokuapp.com/auth';
     var requestBody = {
       'email': email,
@@ -454,15 +501,32 @@ class _LoginPageState extends State<LoginPage> {
     };
     final http.Response response = await http.post(
       Uri.parse(uri),
-      //   headers: <String, String>{
-      // "Content-Type": "application/x-www-form-urlencoded",
-      //     // 'Content-Type': 'application/json; charset=UTF-8',
-      //   },
       body: requestBody,
     );
 
     if (response.statusCode == 200) {
       return LoginModel.fromJson(jsonDecode(response.body));
+    } else {
+      print("ERRORR in logging");
+
+      throw Exception('Failded to login');
+    }
+  }
+
+  Future<DoctorLoginModel> doctorLoginApiHit(
+      String email, String password) async {
+    final uri = 'https://removingbarriers.herokuapp.com/doctorauth';
+    var requestBody = {
+      'email': email,
+      'password': password,
+    };
+    final http.Response response = await http.post(
+      Uri.parse(uri),
+      body: requestBody,
+    );
+
+    if (response.statusCode == 200) {
+      return DoctorLoginModel.fromJson(jsonDecode(response.body));
     } else {
       print("ERRORR in logging");
 

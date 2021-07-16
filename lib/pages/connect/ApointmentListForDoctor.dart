@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:removing_barriers/constants/ColorConstants.dart';
 
 import 'ApointmentAvailableScreen.dart';
+class Person {
+  final String name, time;
 
+  Person(this.name, this.time);
+}
 class AppointmentListDoctor extends StatefulWidget {
   const AppointmentListDoctor({Key? key}) : super(key: key);
 
@@ -15,8 +19,8 @@ class _AppointmentListDoctorState extends State<AppointmentListDoctor> {
     Person('Navjyot Singh', '12:00 am'),
     Person('Muskan', '10:00 am'),
     Person('Somya', '11:00 am'),
-    Person('Hello', '9:00 am'),
-    Person('Test Name', '8:00 am'),
+    Person('Saurabh', '9:00 am'),
+    Person('Jaswinder', '8:00 am'),
   ];
 
   @override

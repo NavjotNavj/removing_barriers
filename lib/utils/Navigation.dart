@@ -12,10 +12,13 @@ class Navigation{
   static void navigateToDoctorList(BuildContext context) =>
       Navigator.push(context, MaterialPageRoute(builder: (_) => SelectScreen()));
 
-  static void navigateToAvailableAppointments(BuildContext context) =>
-      Navigator.push(context, MaterialPageRoute(builder: (_) => AppointmentAvailableScreen()));
+  static void navigateToAvailableAppointments(BuildContext context,String doctorId) =>
+      Navigator.push(context, MaterialPageRoute(builder: (_) => AppointmentAvailableScreen(doctorId:doctorId)));
 
   static void navigateToBookedAppointmentList(BuildContext context) =>
       Navigator.push(context, MaterialPageRoute(builder: (_) => AppointmentsScreen()));
+
+  static void navigateToDoctorAppointmentRequestList(BuildContext context) =>
+      Navigator.push(context, MaterialPageRoute(builder: (_) => AppointmentListDoctor()));
 
 }
